@@ -19,6 +19,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.imageio.ImageIO;
+import javax.xml.transform.Transformer;
 
 /*--------------------------------------------------------------------*/
 class LogoPanel extends JPanel {
@@ -251,13 +252,13 @@ public class ACODemo extends JFrame
       file = chooser.getSelectedFile();
     }                           /* get the selected file */
     try {                       /* load the traveling salesman prob. */
-      //TSP transformed= Tranformer.tranform(file);
-      this.tsp = new TSP(new FileReader(file));
-      //this.tsp=transformed;
+      TSP transformed= Tranformer.tranform(file);
+      //this.tsp = new TSP(new FileReader(file));
+      this.tsp=transformed;
       this.panel.setTSP(this.tsp); /* store the loaded TSP */
       this.stat.setText("Problema cargado ("
                         +file.getName() +").");
-  } catch (IOException e) {
+  } catch (Exception e) {
       String msg = e.getMessage();
       this.stat.setText(msg); System.err.println(msg);
       JOptionPane.showMessageDialog(this, msg,
@@ -560,8 +561,15 @@ public class ACODemo extends JFrame
         AntColony ants = ACODemo.this.panel.getAnts();
         ACODemo.this.stat.setText("Generacion: " +ants.getEpoch()
                                +"Largo del circuito: " +ants.getBestLen());
+        if(cnt==0){
+          for(int u:ants.getBestTour()){
+            System.out.println(Tranformer.getStreet(u).replace(","," "));
+          }
+        }
       } } );                    /* update the status text */
     this.timer.start();         /* start the status update timer */
+
+
   }  /* runAnts() */
 
   /*------------------------------------------------------------------*/
@@ -843,7 +851,8 @@ public class ACODemo extends JFrame
     /* --- create and set the main panel --- */
     this.panel = new ACOPanel();
     this.panel.setLayout(new BorderLayout());
-    this.panel.setPreferredSize(new Dimension(656, 656));
+    //this.panel.setPreferredSize(new Dimension(1280, 720));
+    this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     this.panel.addMouseListener(this);
     this.panel.addMouseMotionListener(this);
     this.scroll = new JScrollPane(this.panel);
