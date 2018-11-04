@@ -559,9 +559,9 @@ public class ACODemo extends JFrame
         AntColony ants = ACODemo.this.panel.getAnts();
         ACODemo.this.stat.setText("Generacion: " +ants.getEpoch()
                                +"Largo del circuito: " +(int)(ants.getBestLen())+ " metros"
-                + " Tiempo en recorrerlo "+(int)(ants.getBestLen()/417+tsp.getAllTimes())+" minutos");
+                + " Tiempo en recorrerlo "+(int)(ants.getBestLen()/200+tsp.getAllTimes())+" minutos");
         if(cnt==0){
-          String dialog="Largo del camino: "+ants.getBestLen()+" metros \n"+" Tiempo en recorrerlo "+(int)(ants.getBestLen()/417+tsp.getAllTimes())+" minutos \n Camino: \n ";
+          String dialog="Largo del camino: "+ants.getBestLen()+" metros \n"+" Tiempo en recorrerlo "+(int)(ants.getBestLen()/200+tsp.getAllTimes())+" minutos \n Camino: \n ";
           for(int u:ants.getBestTour()){
             dialog=dialog.concat(tsp.getCalle(u)+"\n");
           }

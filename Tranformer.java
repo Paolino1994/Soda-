@@ -95,7 +95,7 @@ public class Tranformer {
     }
 
     private static void readConfigurations() {
-        String fileName="C:\\Users\\Colo\\IdeaProjects\\Soda+\\Configuracion.txt";
+        String fileName="C:\\Users\\Federico\\IdeaProjects\\Soda+\\Configuracion.txt";
         String line = null;
 
         try {

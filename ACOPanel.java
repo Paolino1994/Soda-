@@ -228,6 +228,8 @@ public class ACOPanel extends JPanel {
       g.fillOval(x-4, y-4, 9, 9);
       g.setColor(Color.red);    /* red interior */
       g.fillOval(x-3, y-3, 7, 7);
+      g.setColor(Color.black);
+      g.drawString(this.tsp.getCalle(i),x-3, y-3);
     }                           /* draw a circle */
   }  /* paint() */
 

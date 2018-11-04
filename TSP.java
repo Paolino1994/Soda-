@@ -67,6 +67,7 @@ public class TSP {
   {                             /* --- resize coord. vectors */
     int      k;                 /* current/new vector size */
     double[] v;                 /* buffer for reallocation */
+    String s[];
 
     k = this.size;              /* get the number of nodes to copy */
     if (size < 0) size = k +((k < BLKSIZE) ? BLKSIZE : (k >> 1));
@@ -75,6 +76,10 @@ public class TSP {
     this.xs = v;                /* enlarge the x-coordinates vector */
     System.arraycopy(this.ys, 0, v = new double[size], 0, k);
     this.ys = v;                /* enlarge the y-coordinates vector */
+    System.arraycopy(this.tiempos, 0, v = new double[size], 0, k);
+    this.tiempos = v;
+    System.arraycopy(this.nombre, 0, s = new String[size], 0, k);
+    this.nombre = s;
   }  /* resize() */
 
   /*------------------------------------------------------------------*/
