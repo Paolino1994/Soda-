@@ -256,8 +256,8 @@ public class ACODemo extends JFrame
       //this.tsp = new TSP(new FileReader(file));
       this.tsp=transformed;
       this.panel.setTSP(this.tsp); /* store the loaded TSP */
-      this.stat.setText("Problema cargado ("
-                        +file.getName() +").");
+      this.stat.setText("El archivo "
+                        +file.getName() +" fue correctamente cargado");
   } catch (Exception e) {
       String msg = e.getMessage();
       this.stat.setText(msg); System.err.println(msg);
@@ -343,12 +343,6 @@ public class ACODemo extends JFrame
           new SpinnerNumberModel(0, 0, 999999, 1));
     g.setConstraints(seed, rc); grid.add(seed);
 
-    help = new JTextArea(
-       "If the seed for the pseudo-random number generator\n"
-      +"is set to zero, the system time will be used instead.");
-    help.setFont(small); help.setEditable(false);
-    help.setBackground(this.getBackground());
-    g.setConstraints(help, rc); grid.add(help);
 
     bbar = new JPanel(new GridLayout(1, 2, 5, 5));
     bbar.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 3));
@@ -443,7 +437,7 @@ public class ACODemo extends JFrame
       +"is set to zero, the system time will be used instead.");
     help.setFont(small); help.setEditable(false);
     help.setBackground(this.getBackground());
-    g.setConstraints(help, rc); grid.add(help);
+    g.setConstraints(help, rc); //grid.add(help);
 
     lbl = new JLabel("Indice de feromona:");
     g.setConstraints(lbl, lc);     grid.add(lbl);
@@ -451,41 +445,41 @@ public class ACODemo extends JFrame
     phinit.setFont(font);
     g.setConstraints(phinit, rc);  grid.add(phinit);
 
-    lbl = new JLabel("Exploitation probability:");
+    lbl = new JLabel("Probabilidad de tomar un camino:");
     g.setConstraints(lbl, lc);     grid.add(lbl);
     final JTextField exploit = new JTextField("0.2");
     exploit.setFont(font);
     g.setConstraints(exploit, rc); grid.add(exploit);
 
-    lbl = new JLabel("Pheromone trail weight:");
+    lbl = new JLabel("Peso de cada feromona:");
     g.setConstraints(lbl, lc);     grid.add(lbl);
     final JTextField alpha = new JTextField("1");
     alpha.setFont(font);
     g.setConstraints(alpha, rc);   grid.add(alpha);
 
     lbl = new JLabel("Inverse distance weight:");
-    g.setConstraints(lbl, lc);     grid.add(lbl);
+    g.setConstraints(lbl, lc);     //grid.add(lbl);
     final JTextField beta = new JTextField("1");
     beta.setFont(font);
-    g.setConstraints(beta, rc);    grid.add(beta);
+    g.setConstraints(beta, rc);    //grid.add(beta);
 
-    lbl = new JLabel("Evaporation fraction:");
+    lbl = new JLabel("Rango de evaporacion:");
     g.setConstraints(lbl, lc);     grid.add(lbl);
     final JTextField evap = new JTextField("0.1");
     evap.setFont(font);
     g.setConstraints(evap, rc);    grid.add(evap);
 
     lbl = new JLabel("Trail laying exponent:");
-    g.setConstraints(lbl, lc);     grid.add(lbl);
+    g.setConstraints(lbl, lc);     //grid.add(lbl);
     final JTextField layexp = new JTextField("1");
     layexp.setFont(font);
-    g.setConstraints(layexp, rc);   grid.add(layexp);
+    g.setConstraints(layexp, rc);   //grid.add(layexp);
 
     lbl = new JLabel("Elite enhancement:");
-    g.setConstraints(lbl, lc);     grid.add(lbl);
+    g.setConstraints(lbl, lc);     //grid.add(lbl);
     final JTextField elite = new JTextField("0.1");
     elite.setFont(font);
-    g.setConstraints(elite, rc);   grid.add(elite);
+    g.setConstraints(elite, rc);   //grid.add(elite);
 
     bbar = new JPanel(new GridLayout(1, 2, 5, 5));
     bbar.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 3));
@@ -538,17 +532,21 @@ public class ACODemo extends JFrame
   /*------------------------------------------------------------------*/
 
   private void runAnts (int epochs, int delay)
-  {                             /* --- run the ants */
+  {
     if (this.cnt >= 0) {        /* check for running update */
       this.timer.stop(); this.cnt = -1; return; }
     AntColony ants = this.panel.getAnts();
     if (ants == null) return;   /* get the ant colony */
+    if(delay<=0){
+      delay=100;
+    }
     if (delay <= 0) {           /* if to update at the end */
       while (--epochs >= 0)     /* while more epochs to compute, */
         this.panel.runAnts();   /* run the ants again */
       this.panel.repaint();     /* redraw the window contents */
       this.stat.setText("Generacion: " +ants.getEpoch()
-                       +", Largo del circuto: " +ants.getBestLen());
+                       +", Largo del circuto: " +ants.getBestLen()
+                        + " Tiempo en recorrerlo "+(ants.getBestLen()/417+this.tsp.getAllTimes()));
       return;                   /* show a status message, */
     }                           /* then abort the function */
     this.cnt   = epochs;        /* note the epochs */
@@ -560,13 +558,20 @@ public class ACODemo extends JFrame
         ACODemo.this.panel.repaint(); /* redraw the window contents */
         AntColony ants = ACODemo.this.panel.getAnts();
         ACODemo.this.stat.setText("Generacion: " +ants.getEpoch()
-                               +"Largo del circuito: " +ants.getBestLen());
+                               +"Largo del circuito: " +(int)(ants.getBestLen())+ " metros"
+                + " Tiempo en recorrerlo "+(int)(ants.getBestLen()/417+tsp.getAllTimes())+" minutos");
         if(cnt==0){
+          String dialog="Largo del camino: "+ants.getBestLen()+" metros \n"+" Tiempo en recorrerlo "+(int)(ants.getBestLen()/417+tsp.getAllTimes())+" minutos \n Camino: \n ";
           for(int u:ants.getBestTour()){
-            System.out.println(Tranformer.getStreet(u).replace(","," "));
+            dialog=dialog.concat(tsp.getCalle(u)+"\n");
           }
+          JOptionPane.showMessageDialog(null,
+                  dialog);
+          System.out.println(dialog);
         }
+
       } } );                    /* update the status text */
+
     this.timer.start();         /* start the status update timer */
 
 
@@ -752,21 +757,6 @@ public class ACODemo extends JFrame
     item.addActionListener(new ActionListener() {
       public void actionPerformed (ActionEvent e) {
         ACODemo.this.loadTSP(null); } } );
-    item = menu.add(new JMenuItem("Recargar Viajante"));
-    item.setMnemonic('r');
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed (ActionEvent e) {
-        ACODemo.this.loadTSP(ACODemo.this.curr); } } );
-    item = menu.add(new JMenuItem("Guardar Viajante"));
-    item.setMnemonic('s');
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed (ActionEvent e) {
-        ACODemo.this.saveTSP(ACODemo.this.curr); } } );
-    item = menu.add(new JMenuItem("Guardar Viajante como..."));
-    item.setMnemonic('a');
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed (ActionEvent e) {
-        ACODemo.this.saveTSP(null); } } );
     item = menu.add(new JMenuItem("Guardar Imagen..."));
     item.setMnemonic('i');
     item.addActionListener(new ActionListener() {
@@ -798,14 +788,7 @@ public class ACODemo extends JFrame
 
     menu = mbar.add(new JMenu("Acciones"));
     menu.setMnemonic('a');
-    item = menu.add(new JMenuItem("Generar Circutro aleatorio..."));
-    item.setMnemonic('g');
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed (ActionEvent e) {
-        if (ACODemo.this.randtsp == null)
-          ACODemo.this.randtsp = createRandTSP();
-        ACODemo.this.randtsp.setVisible(true);
-      } } );
+
     item = menu.add(new JMenuItem("Crear la colonia de hormigas..."));
     item.setMnemonic('c');
     item.addActionListener(new ActionListener() {

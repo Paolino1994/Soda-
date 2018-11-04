@@ -169,6 +169,7 @@ public class AntColony {
 
     /* --- run the ant --- */
     src = this.rand.nextInt(this.tour.length);
+      src=0;
     this.tour[0]      = src;    /* randomly select the vertex */
     this.visited[src] = true;   /* the ant starts from */
     for (i = 0; ++i < this.tour.length; ) {
@@ -182,7 +183,7 @@ public class AntColony {
         } }                     /* find the best edge to follow */
       else {                    /* if to choose edge randomly */
         sum = 0;                /* init. the quality sum */
-        for (j = n = 0; j < this.tour.length; j++) {
+        for (j = n = 1; j < this.tour.length; j++) {
           if (this.visited[j]) continue;
           sum += this.quals[src][j];
           this.sums[n  ] = sum; /* collect and sum the qualities */
@@ -207,91 +208,7 @@ public class AntColony {
 
   /*------------------------------------------------------------------*/
 
-  public double runAllAntsMultiThread ()
-  {                             /* --- run all ants of the colony */
 
-
-      int cores = Runtime.getRuntime().availableProcessors();
-      //System.out.println(cores);
-      for(int count=0;count<cores;count++){
-          int init=count*this.delta.length/cores;
-          int end= ((count+1)*this.delta.length/cores) - 1;
-          Thread thread = new Thread("New Thread") {
-              public void run(){
-                  //System.out.println("run by: " + getName());
-                  int    i, j;                /* loop variables */
-                  double t, min;              /* new/minimal trail value */
-                  double stick;               /* stick factor for pheromone */
-                   /* --- initialize the edge qualities --- */
-                  for (i = end; --i >= init; ) {
-                      for (j = end; --j >= init; ) {
-                          delta[i][j] = 0;   /* init. the trail change matrix */
-                          quals[i][j] = nears[i][j]
-                                  * ((alpha == 1.0) ? trail[i][j]
-                                  : Math.pow(trail[i][j], alpha));
-                      }                         /* compute the current qualities */
-                  }                           /* of the different edges */
-
-    /* --- run the ants --- */
-                  brlen = Double.MAX_VALUE;
-                  for (i = antcnt; --i >= 0; ) {
-                      runAnt();            /* run an ant on the trail */
-                      if (len >= brlen) continue;
-                      System.arraycopy(tour, 0, brun, 0, brun.length);
-                      brlen = len;    /* if the new tour is better than */
-                  }                           /* the currently best, replace it */
-                  if (brlen < bestlen) {
-                      System.arraycopy(brun, 0, best, 0, best.length);
-                      bestlen = brlen;/* if the best run tour is better */
-                  }                           /* than the best, replace it */
-                  if (elite > 0) {       /* strengthen best tour */
-                      t = avglen/bestlen;
-                      if (layexp != 1) t = Math.pow(t, layexp);
-                      placePhero(best, elite *antcnt *t);
-                  }                           /* place pheromone on best tour */
-
-    /* --- update trail matrix --- */
-                  min = avg/tour.length;
-                  max = avg = 0;    /* reinit. the max./avg. trail value */
-                  stick    = 1 -evap;    /* and compute stick factor */
-                  if (tsp.isSymmetric()){/* if symmetric distances */
-                      for (i = trail.length; --i >= 0; ) {
-                          for (j = i; --j >= 0; ) {
-                              t = stick     * trail[i][j]
-                                      + evap *(delta[i][j] +delta[j][i]);
-                              if (t < min) t = min; /* compute the new trail value */
-                              trail[i][j] =    /* from both edge directions */
-                                      trail[j][i] = t; /* and store it symmetrically */
-                              if (t > max) max = t;
-                              avg += t;        /* update the trail matrix, */
-                          }                       /* find highest trail value, */
-                      }                         /* and sum the trail values */
-                      avg /= 0.5 *tour.length *tour.length; }
-                  else {                      /* if asymmetric distances */
-                      for (i = trail.length; --i >= 0; ) {
-                          for (j = trail.length; --j >= 0; ) {
-                              t = stick     *trail[i][j]
-                                      + evap *delta[i][j];
-                              if (t < min) t = min; /* compute the new trail value */
-                              trail[i][j] = t; /* and store it asymmetrically */
-                              if (t > max) max = t;
-                              avg += t;        /* update the trail matrix, */
-                          }                       /* find highest trail value, */
-                      }                         /* and sum the trail values */
-                      if (tour.length > 1) /* compute average trail value */
-                          avg /= tour.length *(tour.length -1);
-                  }
-
-              }
-          };
-          thread.run();
-      }
-
-
-
-    this.epoch++;               /* count the run */
-    return this.bestlen;        /* return length of best tour */
-  }  /* runAllAnts() */
 
     public double runAllAnts(){
         int    i, j;                /* loop variables */

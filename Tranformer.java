@@ -11,7 +11,7 @@ public class Tranformer {
     private static LinkedList<String> lineas=new LinkedList<String>();
     private static TSP tsp=new TSP();
     static LinkedList<Calle> calles=new LinkedList<Calle>();
-    private static int factor=50;
+    private static int factor=1;
     private static Tranformer instance;
     private final File archivo;
 
@@ -22,24 +22,28 @@ public class Tranformer {
     public static TSP tranform(File file) {
         if(instance==null){
             instance=new Tranformer(file);
+            readConfigurations();
+        }else{
+            lineas=new LinkedList<String>();
+            tsp=new TSP();
         }
         return transform(file);
 
     }
 
     private static TSP transform(File file) {
-        readConfigurations();
         readFile(file);
         for(int i=0;i<lineas.size();i++){
             String linea=lineas.get(i);
             String[] parts = linea.split(",");
             double street=passFromStreetToVertex(parts[0]);
             double altura= Integer.parseInt(parts[1]);
+            double tiempoAtencion=Integer.parseInt(parts[2]);
             //tsp.add(50,50);
             if(streetIsX(parts[0])){
-                tsp.add(street/factor,altura/factor);
+                tsp.add(street/factor,altura/factor,tiempoAtencion,parts[0]+" "+(int)altura);
             }else{
-                tsp.add(altura/factor,street/factor);
+                tsp.add(altura/factor,street/factor,tiempoAtencion,parts[0]+" "+(int)altura);
             }
         }
         tsp.makeDists(true);

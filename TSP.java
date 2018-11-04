@@ -9,7 +9,6 @@ package com.company;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.File;
 import java.io.Reader;
 import java.util.Random;
 
@@ -32,6 +31,8 @@ public class TSP {
   private   double     bbw, bbh;/* (position and width and height) */
   private   boolean    valid;   /* flag for valid bounding box */
   private double[][] distsE;
+  private double[] tiempos;
+  private String[] nombre;
 
   /*------------------------------------------------------------------*/
 
@@ -40,8 +41,10 @@ public class TSP {
   public TSP (int size)
   {                             /* --- create a traveling salesman p. */
     this.size   = 0;            /* initialize the variables */
-    this.xs     = new double[size];
-    this.ys     = new double[size];
+    this.xs     = new double[size+1];
+    this.ys     = new double[size+1];
+    this.tiempos = new double[size+1];
+    this.nombre = new String[size+1];
     this.dists  = null;         /* do not create distance matrix yet */
     this.euclid = true;         /* default: Euclidean distances */
     this.sym    = true;         /* default: symmetric distances */
@@ -76,13 +79,15 @@ public class TSP {
 
   /*------------------------------------------------------------------*/
 
-  public int add (double x, double y)
+  public int add(double x, double y, double tiempoAtencion, String calle)
   {                             /* --- add a vertex */
     if (this.size >= this.xs.length)
       this.resize(-1);          /* resize the coord. vectors if nec. */
     this.valid = false;         /* bounding box is no longer valid */
     this.xs[this.size] = x;     /* set the coordinates */
     this.ys[this.size] = y;     /* of the new vertex */
+    this.tiempos[this.size] = tiempoAtencion;
+    this.nombre[this.size]=calle;
     return this.size++;         /* and return its index */
   }  /* add() */
 
@@ -356,4 +361,15 @@ public class TSP {
     System.out.print(tsp);      /* print the created TSP */
   }  /* main() */
 
+  public String getCalle(int u) {
+    return this.nombre[u];
+  }
+
+  public double getAllTimes() {
+    double counter=0;
+    for(int i=0; i<tiempos.length;i++){
+      counter+=tiempos[i];
+    }
+    return counter;
+  }
 }  /* class TSP */

@@ -95,7 +95,7 @@ public class ACOPanel extends JPanel {
     else {                      /* if a new TSP was set */
       this.xoff = tsp.getX();
       this.yoff = tsp.getY();   /* set default offset */
-      this.setScale(64.0);      /* and default scale */
+      this.setScale(1.0);      /* and default scale */
       int n = this.tsp.size();  /* create the edge vector */
       this.edges = new Edge[n = (n *(n-1)) >> 1];
       while (--n >= 0) this.edges[n] = new Edge();
