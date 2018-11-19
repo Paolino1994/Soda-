@@ -208,6 +208,7 @@ public class ACOPanel extends JPanel {
       for (i = 0; i < k; i++) { /* traverse the edges */
         e = this.edges[i];      /* get edge and set color */
         g.setColor(this.cols[e.c]);
+        g.setColor(Color.white);
         g.drawLine(this.xs[e.i],this.ys[e.i],this.xs[e.j],this.ys[e.j]);
       }                         /* draw a line between the vertices */
       ((Graphics2D)g).setStroke(this.thin);
@@ -216,6 +217,7 @@ public class ACOPanel extends JPanel {
       i    = tour[0];           /* get the tour and its start */
       for (k = n; --k >= 0; ) { /* traverse the edges of the tour */
         j = i; i = tour[k];     /* get the next vertex index */
+        //g.setColor(Color.white);
         g.drawLine(this.xs[i], this.ys[i], this.xs[j], this.ys[i]);
         g.drawLine(this.xs[j], this.ys[i], this.xs[j], this.ys[j]);
       }                         /* draw the next edge of the tour */

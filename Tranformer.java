@@ -36,18 +36,27 @@ public class Tranformer {
         for(int i=0;i<lineas.size();i++){
             String linea=lineas.get(i);
             String[] parts = linea.split(",");
-            double street=passFromStreetToVertex(parts[0]);
             double altura= Integer.parseInt(parts[1]);
             double tiempoAtencion=Integer.parseInt(parts[2]);
+            addStreet(parts[0], altura, tiempoAtencion);
             //tsp.add(50,50);
-            if(streetIsX(parts[0])){
-                tsp.add(street/factor,altura/factor,tiempoAtencion,parts[0]+" "+(int)altura);
-            }else{
-                tsp.add(altura/factor,street/factor,tiempoAtencion,parts[0]+" "+(int)altura);
-            }
+
         }
         tsp.makeDists(true);
         return tsp;
+    }
+
+    public static void addStreet(String calleString, double altura, double tiempoAtencion) {
+        if (calles.isEmpty()){
+                tsp=new TSP();
+                readConfigurations();
+        }
+        double street=passFromStreetToVertex(calleString);
+        if(streetIsX(calleString)){
+            tsp.add(street/factor,altura/factor,tiempoAtencion,calleString+" "+(int)altura);
+        }else{
+            tsp.add(altura/factor,street/factor,tiempoAtencion,calleString+" "+(int)altura);
+        }
     }
 
     private static double passFromStreetToVertex(String part) {
@@ -61,8 +70,10 @@ public class Tranformer {
 
     private static boolean streetIsX(String part) {
         for(Calle calle : calles){
-            if(calle.equals(part)){
+            if(calle.getNombre().equals(part)){
                 if(calle.hasXOrientation()){
+                    return false;
+                }else{
                     return true;
                 }
             }
@@ -130,5 +141,9 @@ public class Tranformer {
     }
     public static String getStreet(int calle){
         return lineas.get(calle);
+    }
+
+    public static TSP getTSP() {
+        return tsp;
     }
 }
